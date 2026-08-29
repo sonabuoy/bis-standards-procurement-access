@@ -1,0 +1,6 @@
+{
+  "name": "BIS Standard Advisor",
+  "description": "AI-assisted Indian Standards (IS) recommendation and specification advisor for government and institutional procurement by Bureau of Indian Standards.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
