@@ -1,0 +1,74 @@
+[
+  {
+    "eval_id": "E001",
+    "procurement_query": "Supply of packaged pasteurized milk",
+    "expected_is_number": null,
+    "expected_title": null,
+    "domain": "Dairy",
+    "status": "Template",
+    "notes": "Fill from verified evaluation dataset"
+  },
+  {
+    "eval_id": "E002",
+    "procurement_query": "Procurement of 90W outdoor LED street lights for highways",
+    "expected_is_number": null,
+    "expected_title": null,
+    "domain": "Electrical/Lighting",
+    "status": "Template",
+    "notes": null
+  },
+  {
+    "eval_id": "E003",
+    "procurement_query": "Procurement of Portland cement for government construction",
+    "expected_is_number": null,
+    "expected_title": null,
+    "domain": "Building Materials",
+    "status": "Template",
+    "notes": null
+  },
+  {
+    "eval_id": "E004",
+    "procurement_query": "Procurement of industrial electrical cables",
+    "expected_is_number": null,
+    "expected_title": null,
+    "domain": "Electrical",
+    "status": "Template",
+    "notes": null
+  },
+  {
+    "eval_id": "E005",
+    "procurement_query": "Procurement of safety helmets for construction workers",
+    "expected_is_number": null,
+    "expected_title": null,
+    "domain": "Safety",
+    "status": "Template",
+    "notes": null
+  },
+  {
+    "eval_id": "E006",
+    "procurement_query": "Procurement of stainless steel water storage tanks",
+    "expected_is_number": null,
+    "expected_title": null,
+    "domain": "Building/Water",
+    "status": "Template",
+    "notes": null
+  },
+  {
+    "eval_id": "E007",
+    "procurement_query": "Procurement of school furniture (desks and chairs)",
+    "expected_is_number": null,
+    "expected_title": null,
+    "domain": "Furniture",
+    "status": "Template",
+    "notes": null
+  },
+  {
+    "eval_id": "E008",
+    "procurement_query": "Procurement of medical examination gloves",
+    "expected_is_number": null,
+    "expected_title": null,
+    "domain": "Medical",
+    "status": "Template",
+    "notes": null
+  }
+]
