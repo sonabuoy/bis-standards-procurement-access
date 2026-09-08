@@ -40,33 +40,33 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   return (
     <section className="relative w-full overflow-hidden">
-      {/* Hero Background Container with India Gate Twilight Visual */}
-      <div className="relative min-h-[580px] sm:min-h-[620px] lg:min-h-[660px] flex items-center justify-center bg-gradient-to-b from-[#1b1c3a] via-[#2c204d] to-[#121c33]">
-        {/* Background Image of India Gate illuminated at dusk */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-45 mix-blend-luminosity scale-105 transform transition-transform duration-1000"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=2000&q=80')`
+      {/* Hero Background Container with Iconic Landmark Visual */}
+      <div className="relative min-h-[580px] sm:min-h-[620px] lg:min-h-[660px] flex items-center justify-center bg-[#081a33] overflow-hidden">
+        {/* Explicit Landmark Photograph: India Gate, New Delhi */}
+        <img
+          src="/images/india-gate.jpg"
+          alt="India Gate, New Delhi - National Landmark"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+          onError={(e) => {
+            e.currentTarget.src = 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=2000&q=80';
           }}
         />
 
-        {/* Ambient Dark/Sunset Vignette Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#031632] via-[#031632]/70 to-[#031632]/85 pointer-events-none" />
-
-        {/* Subtle Radial Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Subtle Dark Navy Overlay for text readability without obscuring the landmark */}
+        <div className="absolute inset-0 bg-[#081a33]/65 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#081a33]/90 via-transparent to-[#081a33]/40 pointer-events-none" />
 
         {/* Hero Content */}
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16 text-center">
           {/* State Emblem of India (Ashoka Lion Capital) */}
           <div className="inline-flex flex-col items-center justify-center mb-4">
             <div className="w-16 h-20 flex items-center justify-center text-amber-100/90 filter drop-shadow-md">
-              <svg viewBox="0 0 100 130" className="w-full h-full fill-current">
+              <svg viewBox="0 0 100 130" className="w-full h-full fill-current" aria-hidden="true">
                 {/* Stylized Lion Capital Silhouette */}
                 <path d="M50 5 C45 5, 42 12, 42 18 C38 15, 30 18, 30 24 C30 30, 36 34, 38 38 C32 38, 25 43, 26 50 C27 58, 34 60, 38 64 C35 70, 38 78, 44 82 C42 86, 44 92, 50 94 C56 92, 58 86, 56 82 C62 78, 65 70, 62 64 C66 60, 73 58, 74 50 C75 43, 68 38, 62 38 C64 34, 70 30, 70 24 C70 18, 62 15, 58 18 C58 12, 55 5, 50 5 Z" opacity="0.95" />
                 {/* Abacus Base with Ashoka Chakra Circle */}
                 <rect x="25" y="96" width="50" height="8" rx="2" fill="currentColor" />
-                <circle cx="50" cy="100" r="3.5" fill="#031632" />
+                <circle cx="50" cy="100" r="3.5" fill="#081a33" />
                 {/* Base Plinth */}
                 <path d="M20 106 L80 106 L75 116 L25 116 Z" fill="currentColor" />
                 {/* Satyameva Jayate Inscription */}
@@ -75,7 +75,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </text>
               </svg>
             </div>
-            <span className="text-[11px] uppercase tracking-widest text-amber-200/80 font-medium">
+            <span className="text-[11px] uppercase tracking-widest text-amber-200/90 font-medium drop-shadow-xs">
               National Standards Portal
             </span>
           </div>
@@ -86,12 +86,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </h1>
 
           {/* Subtitle */}
-          <p className="mt-3 text-sm sm:text-base md:text-lg text-slate-200 max-w-2xl mx-auto font-normal leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base md:text-lg text-slate-100 max-w-2xl mx-auto font-normal leading-relaxed drop-shadow-xs">
             AI-assisted specification support for government and institutional procurement.
           </p>
 
-          {/* Elevated Input Card matching screenshot */}
-          <div className="mt-8 bg-white/95 backdrop-blur-md rounded-xl p-5 sm:p-6 shadow-2xl border border-white/40 text-left transition-all">
+          {/* Elevated Input Card */}
+          <div className="mt-8 bg-white/95 backdrop-blur-md rounded-xl p-5 sm:p-6 shadow-2xl border border-white/50 text-left transition-all">
             <form onSubmit={handleSubmit}>
               <div className="flex items-center justify-between mb-2">
                 <label 
@@ -114,7 +114,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   value={requirementText}
                   onChange={(e) => setRequirementText(e.target.value)}
                   placeholder="Describe what you need to procure... (e.g., '90W outdoor LED street lights for highway use')"
-                  className="w-full px-4 py-3 text-sm sm:text-base text-gray-900 placeholder:text-gray-400 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#031632] focus:border-transparent resize-none transition-shadow shadow-inner"
+                  className="w-full px-4 py-3 text-sm sm:text-base text-gray-900 placeholder:text-gray-400 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#081a33] focus:border-transparent resize-none transition-shadow shadow-inner font-sans"
                   required
                 />
               </div>
@@ -129,7 +129,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     key={idx}
                     type="button"
                     onClick={() => handleSelectSample(sample)}
-                    className="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-2.5 py-1 rounded-full border border-slate-200 transition-colors truncate max-w-[280px]"
+                    className="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-2.5 py-1 rounded-full border border-slate-200 transition-colors truncate max-w-[280px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#081a33]"
                     title={sample}
                   >
                     {sample}
@@ -144,11 +144,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   type="button"
                   onClick={onOpenTenderModal}
                   id="btn-upload-tender-hero"
-                  className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-700 hover:text-[#031632] transition-colors group cursor-pointer"
+                  className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-700 hover:text-[#081a33] transition-colors group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#081a33] rounded px-1.5 py-0.5"
                 >
                   <FileUp className="w-4 h-4 text-blue-700 group-hover:scale-110 transition-transform" />
                   <span>
-                    Or <span className="underline font-bold text-[#031632]">Upload Tender</span> (PDF/DOCX)
+                    Or <span className="underline font-bold text-[#081a33]">Upload Tender</span> (PDF/DOCX)
                   </span>
                 </button>
 
@@ -157,7 +157,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   type="submit"
                   disabled={isLoading || !requirementText.trim()}
                   id="btn-analyze-requirement-hero"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#c5221f] hover:bg-[#a51a18] active:bg-[#8e1412] text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#c5221f] hover:bg-[#a51a18] active:bg-[#8e1412] text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#081a33] focus-visible:ring-offset-2"
                 >
                   {isLoading ? (
                     <>
@@ -178,11 +178,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       </div>
 
       {/* Tricolor National Horizontal Divider matching design */}
-      <div className="w-full flex h-1.5 shadow-xs">
+      <div className="w-full flex h-1.5 shadow-xs shrink-0" aria-hidden="true">
         <div className="flex-1 bg-[#FF9933]" title="Saffron" />
         <div className="flex-1 bg-[#FFFFFF]" title="White" />
         <div className="flex-1 bg-[#138808]" title="India Green" />
       </div>
     </section>
   );
+
 };

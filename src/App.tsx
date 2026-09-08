@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { NavTab, RequirementAnalysis, IndianStandard } from './types';
+import { NavTab, RequirementAnalysis, IndianStandard, TenderProcessingResult, TenderProcurementItem } from './types';
 import { Navbar } from './components/Navbar';
-import { HeroSection } from './components/HeroSection';
-import { HowItWorks } from './components/HowItWorks';
-import { ExploreStandards } from './components/ExploreStandards';
-import { AnalysisResultView } from './components/AnalysisResultView';
+import { HomeProcurementView } from './components/HomeProcurementView';
+import { AnalysisWorkspaceView } from './components/AnalysisWorkspaceView';
 import { StandardsExplorerView } from './components/StandardsExplorerView';
 import { MyAnalysesView } from './components/MyAnalysesView';
 import { HelpView } from './components/HelpView';
@@ -17,7 +15,9 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<NavTab>('home');
   const [requirementText, setRequirementText] = useState('');
   const [currentAnalysis, setCurrentAnalysis] = useState<RequirementAnalysis | null>(null);
+  const [currentTenderResult, setCurrentTenderResult] = useState<TenderProcessingResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAnalyzingItem, setIsAnalyzingItem] = useState(false);
   const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
   const [selectedStandard, setSelectedStandard] = useState<IndianStandard | null>(null);
   const [explorerQuery, setExplorerQuery] = useState('');
@@ -31,9 +31,8 @@ export default function App() {
         return JSON.parse(saved);
       }
     } catch (e) {
-      console.error(e);
+      console.error('Error loading saved analyses:', e);
     }
-    // Pre-seed with default sample analysis
     return [];
   });
 
@@ -41,11 +40,11 @@ export default function App() {
     try {
       localStorage.setItem('bis_saved_analyses', JSON.stringify(savedAnalyses));
     } catch (e) {
-      console.error(e);
+      console.error('Error persisting saved analyses:', e);
     }
   }, [savedAnalyses]);
 
-  // Main Requirement Analyzer Function
+  // Main Requirement Analyzer Function (Pasted text or single standard query)
   const handleAnalyzeRequirement = async (textToAnalyze?: string) => {
     const query = textToAnalyze || requirementText;
     if (!query || !query.trim()) return;
@@ -64,6 +63,7 @@ export default function App() {
 
       const data: RequirementAnalysis = await response.json();
       setCurrentAnalysis(data);
+      setCurrentTenderResult(null); // Clear previous multi-item tender
       setActiveTab('recommendation');
       setIsTenderModalOpen(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -140,11 +140,89 @@ export default function App() {
       };
 
       setCurrentAnalysis(fallback);
+      setCurrentTenderResult(null);
       setActiveTab('recommendation');
       setIsTenderModalOpen(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Handle Tender Document Ingestion Result
+  const handleTenderProcessed = async (result: TenderProcessingResult) => {
+    setCurrentTenderResult(result);
+    
+    // If the tender has an item with an embedded analysis, use it
+    if (result.items && result.items.length > 0) {
+      if (result.items[0].analysis) {
+        setCurrentAnalysis(result.items[0].analysis);
+      } else {
+        // Automatically request analysis for Item 1
+        try {
+          setIsAnalyzingItem(true);
+          const firstItem = result.items[0];
+          const query = `${firstItem.product} ${firstItem.technicalParameters?.join(' ') || ''}`.trim();
+          const response = await fetch('/api/analyze-requirement', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ requirement: query }),
+          });
+
+          if (response.ok) {
+            const data: RequirementAnalysis = await response.json();
+            firstItem.analysis = data;
+            setCurrentAnalysis(data);
+          }
+        } catch (e) {
+          console.error('Error pre-analyzing first tender item:', e);
+        } finally {
+          setIsAnalyzingItem(false);
+        }
+      }
+    }
+
+    setActiveTab('recommendation');
+    setIsTenderModalOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // On-demand analysis for an unanalyzed tender item
+  const handleAnalyzeTenderItem = async (item: TenderProcurementItem, index: number) => {
+    if (!currentTenderResult) return;
+    setIsAnalyzingItem(true);
+
+    try {
+      const query = `${item.product} ${item.technicalParameters?.join(' ') || ''}`.trim();
+      const response = await fetch('/api/analyze-requirement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requirement: query }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+
+      const data: RequirementAnalysis = await response.json();
+      
+      // Update item in tenderResult
+      const updatedItems = [...currentTenderResult.items];
+      updatedItems[index] = {
+        ...item,
+        analysis: data
+      };
+
+      setCurrentTenderResult({
+        ...currentTenderResult,
+        items: updatedItems
+      });
+
+      setCurrentAnalysis(data);
+    } catch (err) {
+      console.error('Error analyzing tender item:', err);
+    } finally {
+      setIsAnalyzingItem(false);
     }
   };
 
@@ -182,8 +260,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fcf8f8] text-[#1c1b1b] font-['Inter',sans-serif]">
-      {/* Top Main Navigation */}
+    <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 font-['Inter',sans-serif]">
+      {/* Top Institutional Header & Navigation */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={(tab) => {
@@ -192,67 +270,48 @@ export default function App() {
         }}
         onOpenTenderModal={() => setIsTenderModalOpen(true)}
         onFocusRequirement={handleFocusRequirementInput}
+        hasActiveAnalysis={!!currentAnalysis || !!currentTenderResult}
       />
 
       {/* Main Screen Content */}
       <main className="flex-1">
-        {/* VIEW 1: HOME (Exact match to screenshot) */}
+        {/* VIEW 1: HOME (NEW PROCUREMENT ANALYSIS) */}
         {activeTab === 'home' && (
           <div className="animate-in fade-in duration-200">
-            {/* Hero Section */}
-            <HeroSection
+            <HomeProcurementView
               requirementText={requirementText}
               setRequirementText={setRequirementText}
               onAnalyze={(text) => handleAnalyzeRequirement(text)}
               isLoading={isLoading}
               onOpenTenderModal={() => setIsTenderModalOpen(true)}
-            />
-
-            {/* How it Works Section */}
-            <HowItWorks />
-
-            {/* Explore Indian Standards Section */}
-            <ExploreStandards
-              onSelectStandard={(std) => setSelectedStandard(std)}
               onNavigateToExplorer={handleNavigateToExplorer}
+              onTenderProcessed={handleTenderProcessed}
+              onSelectStandard={(std) => setSelectedStandard(std)}
             />
           </div>
         )}
 
-        {/* VIEW 2: AI RECOMMENDATION / ANALYSIS RESULT */}
+        {/* VIEW 2: ANALYSIS WORKSPACE (ITEM CARDS, GAPS, PROVENANCE, RECOMMENDED STANDARDS, BOQ) */}
         {activeTab === 'recommendation' && (
           <div className="animate-in fade-in duration-200">
-            {currentAnalysis ? (
-              <AnalysisResultView
-                analysis={currentAnalysis}
-                onBackToHome={() => {
-                  setActiveTab('home');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                onSelectStandard={(std) => setSelectedStandard(std)}
-                onSaveAnalysis={handleSaveAnalysis}
-                isSaved={savedAnalyses.some((a) => a.id === currentAnalysis.id)}
-              />
-            ) : (
-              <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-                <h2 className="text-xl font-bold text-gray-800 mb-2">
-                  No Active Analysis
-                </h2>
-                <p className="text-sm text-gray-600 mb-6">
-                  Please enter a procurement requirement or upload a tender on the home screen to generate an advisory.
-                </p>
-                <button
-                  onClick={() => setActiveTab('home')}
-                  className="px-6 py-2.5 bg-[#031632] text-white text-sm font-semibold rounded-xl"
-                >
-                  Go to Requirement Analyzer
-                </button>
-              </div>
-            )}
+            <AnalysisWorkspaceView
+              analysis={currentAnalysis}
+              tenderResult={currentTenderResult}
+              onBackToHome={() => {
+                setActiveTab('home');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onSelectStandard={(std) => setSelectedStandard(std)}
+              onSaveAnalysis={handleSaveAnalysis}
+              isSaved={currentAnalysis ? savedAnalyses.some((a) => a.id === currentAnalysis.id) : false}
+              onAnalyzeTenderItem={handleAnalyzeTenderItem}
+              isAnalyzingItem={isAnalyzingItem}
+              onRefineRequirement={handleAnalyzeRequirement}
+            />
           </div>
         )}
 
-        {/* VIEW 3: STANDARDS EXPLORER */}
+        {/* VIEW 3: STANDARDS EXPLORER (1,392 INDEXED STANDARDS) */}
         {activeTab === 'explorer' && (
           <div className="animate-in fade-in duration-200">
             <StandardsExplorerView
@@ -260,20 +319,22 @@ export default function App() {
               initialDivision={explorerDivision}
               onSelectStandard={(std) => setSelectedStandard(std)}
               onAnalyzeStandard={(std) => {
-                setRequirementText(`Procurement specification for items conforming to ${std.isCode} (${std.title})`);
-                handleAnalyzeRequirement(`Procurement specification for items conforming to ${std.isCode} (${std.title})`);
+                const query = `Procurement requirements for items conforming to ${std.isCode} (${std.title})`;
+                setRequirementText(query);
+                handleAnalyzeRequirement(query);
               }}
             />
           </div>
         )}
 
-        {/* VIEW 4: MY ANALYSES */}
+        {/* VIEW 4: MY SAVED ADVISORIES */}
         {activeTab === 'analyses' && (
           <div className="animate-in fade-in duration-200">
             <MyAnalysesView
               savedAnalyses={savedAnalyses}
               onOpenAnalysis={(item) => {
                 setCurrentAnalysis(item);
+                setCurrentTenderResult(null);
                 setActiveTab('recommendation');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
@@ -283,7 +344,7 @@ export default function App() {
           </div>
         )}
 
-        {/* VIEW 5: HELP & PROCUREMENT GUIDE */}
+        {/* VIEW 5: HELP & PROCUREMENT RULES */}
         {activeTab === 'help' && (
           <div className="animate-in fade-in duration-200">
             <HelpView />
@@ -295,8 +356,14 @@ export default function App() {
       <TenderUploadModal
         isOpen={isTenderModalOpen}
         onClose={() => setIsTenderModalOpen(false)}
-        onAnalyzeTenderText={(text) => handleAnalyzeRequirement(text)}
-        isLoading={isLoading}
+        onSelectAnalysis={(analysis) => {
+          setCurrentAnalysis(analysis);
+          setCurrentTenderResult(null);
+          setActiveTab('recommendation');
+          setIsTenderModalOpen(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onAnalyzeRequirement={(text) => handleAnalyzeRequirement(text)}
       />
 
       {/* Standard Detail Modal */}
@@ -305,12 +372,13 @@ export default function App() {
         onClose={() => setSelectedStandard(null)}
         onAnalyze={(std) => {
           setSelectedStandard(null);
-          setRequirementText(`Procurement requirements for ${std.title} conforming to ${std.isCode}`);
-          handleAnalyzeRequirement(`Procurement requirements for ${std.title} conforming to ${std.isCode}`);
+          const query = `Procurement requirements for items conforming to ${std.isCode} (${std.title})`;
+          setRequirementText(query);
+          handleAnalyzeRequirement(query);
         }}
       />
 
-      {/* Global Footer */}
+      {/* Global Institutional Footer */}
       <Footer onOpenHelp={() => { setActiveTab('help'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />
     </div>
   );

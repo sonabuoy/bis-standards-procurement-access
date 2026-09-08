@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, ShieldCheck, Building, HelpCircle } from 'lucide-react';
+import { ExternalLink, ShieldCheck, Building2, HelpCircle, Scale } from 'lucide-react';
 
 interface FooterProps {
   onOpenHelp: () => void;
@@ -7,37 +7,52 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onOpenHelp }) => {
   return (
-    <footer className="bg-[#031632] text-white">
-      {/* Upper informational strip */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-b border-white/10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-xs text-gray-300">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 rounded bg-white/10 flex items-center justify-center font-bold text-amber-400">
-                IS
+    <footer className="bg-[#051122] text-white border-t border-[#122b4d]">
+      {/* Top Tricolour Subtle Rule */}
+      <div className="h-[3px] w-full grid grid-cols-3" aria-hidden="true">
+        <div className="bg-[#e06a14]" />
+        <div className="bg-[#ffffff]" />
+        <div className="bg-[#138808]" />
+      </div>
+
+      {/* Main Footer Directory */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-xs text-slate-300">
+          {/* Col 1: Institutional Authority */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded bg-[#0b2140] border border-[#1f477d] flex items-center justify-center font-bold text-[#f39c12] text-xs">
+                BIS
               </div>
-              <span className="font-bold text-sm text-white font-['Noto_Sans',sans-serif]">
-                Bureau of Indian Standards
-              </span>
+              <div>
+                <span className="font-bold text-sm text-white font-['Noto_Sans',sans-serif] block">
+                  Bureau of Indian Standards
+                </span>
+                <span className="text-[10px] text-slate-400">
+                  National Standards Body of India
+                </span>
+              </div>
             </div>
-            <p className="text-gray-400 leading-relaxed">
-              Established by the Bureau of Indian Standards Act, 2016. The National Standards Body of India responsible for the harmonious development of standardization, marking, and quality certification.
+            <p className="text-slate-400 leading-relaxed text-[11px]">
+              Established under the Bureau of Indian Standards Act, 2016 (Ministry of Consumer Affairs, Food & Public Distribution, Government of India). Operates the national standards formulation and conformity assessment framework.
             </p>
           </div>
 
+          {/* Col 2: Official Portals */}
           <div>
-            <h4 className="font-semibold text-white mb-3 uppercase tracking-wider text-[11px]">
-              Key Portals & Services
+            <h4 className="font-bold text-white mb-3 uppercase tracking-wider text-[11px] text-[#f39c12]">
+              Official Portals & Verification
             </h4>
-            <ul className="space-y-2 text-gray-300">
+            <ul className="space-y-2 text-slate-300 text-xs">
               <li>
                 <a 
                   href="https://www.services.bis.gov.in" 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="hover:text-amber-300 transition-colors inline-flex items-center gap-1"
+                  className="hover:text-white transition-colors inline-flex items-center gap-1"
                 >
-                  BIS Manakonline Portal <ExternalLink className="w-3 h-3 text-gray-400" />
+                  <span>BIS Manakonline (License Directory)</span>
+                  <ExternalLink className="w-3 h-3 text-slate-500" />
                 </a>
               </li>
               <li>
@@ -45,9 +60,21 @@ export const Footer: React.FC<FooterProps> = ({ onOpenHelp }) => {
                   href="https://gem.gov.in" 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="hover:text-amber-300 transition-colors inline-flex items-center gap-1"
+                  className="hover:text-white transition-colors inline-flex items-center gap-1"
                 >
-                  Government e-Marketplace (GeM) <ExternalLink className="w-3 h-3 text-gray-400" />
+                  <span>Government e-Marketplace (GeM)</span>
+                  <ExternalLink className="w-3 h-3 text-slate-500" />
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://eprocure.gov.in" 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="hover:text-white transition-colors inline-flex items-center gap-1"
+                >
+                  <span>Central Public Procurement Portal (CPPP)</span>
+                  <ExternalLink className="w-3 h-3 text-slate-500" />
                 </a>
               </li>
               <li>
@@ -55,73 +82,98 @@ export const Footer: React.FC<FooterProps> = ({ onOpenHelp }) => {
                   href="https://nabl-india.org" 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="hover:text-amber-300 transition-colors inline-flex items-center gap-1"
+                  className="hover:text-white transition-colors inline-flex items-center gap-1"
                 >
-                  NABL Testing Lab Directory <ExternalLink className="w-3 h-3 text-gray-400" />
+                  <span>NABL Testing Laboratory Directory</span>
+                  <ExternalLink className="w-3 h-3 text-slate-500" />
                 </a>
               </li>
             </ul>
           </div>
 
+          {/* Col 3: Procurement Guidelines */}
           <div>
-            <h4 className="font-semibold text-white mb-3 uppercase tracking-wider text-[11px]">
-              Procurement Guidance
+            <h4 className="font-bold text-white mb-3 uppercase tracking-wider text-[11px] text-[#f39c12]">
+              Public Procurement Mandates
             </h4>
-            <ul className="space-y-2 text-gray-300">
+            <ul className="space-y-2 text-slate-300 text-xs">
               <li>
-                <button onClick={onOpenHelp} className="hover:text-amber-300 transition-colors text-left">
-                  General Financial Rules (GFR) Rule 144(xi)
+                <button 
+                  onClick={onOpenHelp} 
+                  className="hover:text-white transition-colors text-left cursor-pointer"
+                >
+                  General Financial Rules (GFR 2017) Rule 144(xi)
                 </button>
               </li>
               <li>
-                <button onClick={onOpenHelp} className="hover:text-amber-300 transition-colors text-left">
-                  Quality Control Orders (QCO) Gazette Mandates
+                <button 
+                  onClick={onOpenHelp} 
+                  className="hover:text-white transition-colors text-left cursor-pointer"
+                >
+                  Compulsory Quality Control Orders (QCO)
                 </button>
               </li>
               <li>
-                <button onClick={onOpenHelp} className="hover:text-amber-300 transition-colors text-left">
-                  Public Procurement (Preference to Make in India)
+                <button 
+                  onClick={onOpenHelp} 
+                  className="hover:text-white transition-colors text-left cursor-pointer"
+                >
+                  Public Procurement (Make in India Order, 2017)
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={onOpenHelp} 
+                  className="hover:text-white transition-colors text-left cursor-pointer"
+                >
+                  BIS Compulsory Registration Scheme (CRS)
                 </button>
               </li>
             </ul>
           </div>
 
+          {/* Col 4: Manak Bhawan Headquarters */}
           <div>
-            <h4 className="font-semibold text-white mb-3 uppercase tracking-wider text-[11px]">
-              Headquarters
+            <h4 className="font-bold text-white mb-3 uppercase tracking-wider text-[11px] text-[#f39c12]">
+              Manak Bhawan Headquarters
             </h4>
-            <address className="not-italic text-gray-400 leading-relaxed">
-              Manak Bhawan, 9 Bahadur Shah Zafar Marg,<br />
+            <address className="not-italic text-slate-400 leading-relaxed text-[11px]">
+              9 Bahadur Shah Zafar Marg,<br />
               New Delhi – 110002, INDIA<br />
-              Tel: +91 11 23230131 / 23233375<br />
+              EPABX: +91 11 23230131, 23233375<br />
               Email: info@bis.gov.in
             </address>
           </div>
         </div>
+
+        {/* Factual Disclaimer */}
+        <div className="mt-8 pt-6 border-t border-slate-800 text-[11px] text-slate-400 leading-relaxed">
+          <p>
+            <strong>Statutory Disclaimer:</strong> This portal assists public procurement officials, tender drafting committees, and vendors in identifying applicable Indian Standards (IS) and drafting BoQ specifications. Published standards data is indexed from Bureau of Indian Standards documentation. Procurement officers must independently confirm operative amendments and live manufacturer license validity on <em>services.bis.gov.in</em> before awarding contracts.
+          </p>
+        </div>
       </div>
 
-      {/* Main bottom copyright bar matching exact screenshot */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-gray-300">
-        <p className="font-medium text-gray-300">
-          © 2024 Bureau of Indian Standards. All rights reserved.
-        </p>
+      {/* Bottom Micro-Bar */}
+      <div className="bg-[#030b17] border-t border-slate-900 py-3 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-slate-400">
+          <p>
+            © {new Date().getFullYear()} Bureau of Indian Standards. Government of India.
+          </p>
 
-        <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-gray-300">
-          <a href="#accessibility" onClick={(e) => { e.preventDefault(); onOpenHelp(); }} className="hover:text-white transition-colors">
-            Accessibility
-          </a>
-          <a href="#privacy" onClick={(e) => { e.preventDefault(); onOpenHelp(); }} className="hover:text-white transition-colors">
-            Privacy Policy
-          </a>
-          <a href="#terms" onClick={(e) => { e.preventDefault(); onOpenHelp(); }} className="hover:text-white transition-colors">
-            Terms
-          </a>
-          <a href="#contact" onClick={(e) => { e.preventDefault(); onOpenHelp(); }} className="hover:text-white transition-colors">
-            Contact
-          </a>
-          <a href="#bis-info" onClick={(e) => { e.preventDefault(); onOpenHelp(); }} className="hover:text-white transition-colors font-semibold text-amber-300">
-            BIS Information
-          </a>
+          <div className="flex flex-wrap items-center gap-4">
+            <button onClick={onOpenHelp} className="hover:text-white transition-colors cursor-pointer">
+              Procurement Guidance
+            </button>
+            <span>•</span>
+            <button onClick={onOpenHelp} className="hover:text-white transition-colors cursor-pointer">
+              Evidence Gate Standards
+            </button>
+            <span>•</span>
+            <button onClick={onOpenHelp} className="hover:text-white transition-colors cursor-pointer">
+              Accessibility
+            </button>
+          </div>
         </div>
       </div>
     </footer>
